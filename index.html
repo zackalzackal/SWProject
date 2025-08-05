@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>다크모드 전환</title>
+  <link rel="stylesheet" href="css/main.css" />
+</head>
+<body>
+  <div class="main-header">
+    <div class="subtitle">SW 미래채움 고등창의과학톤</div>
+    <img src="hear.png" alt="HEAR 로고" class="sub-logo">
+    <img src="import.png" alt="중요한" class="main-image">
+    <div class="main-description">Hatred Expression Academic Reducer</div>
+  </div>
+
+  <div class="theme-toggle">
+    <img id="modeIcon" src="moon.png" alt="모드 전환 아이콘">
+  </div>
+
+  <div class="selector">
+    <button id="openSelectBtn" class="form-select">학교 선택</button>
+  </div>
+
+  <div class="popup-overlay" id="schoolSelectPopup" style="display: none;">
+    <div class="popup-select">
+      <div class="option">수성고등학교</div>
+      <div class="option">삼일공업고등학교</div>
+      <div class="option">수원정보과학고등학교</div>
+      <div class="option">조원고등학교</div>
+      <div class="option">태광고등학교</div>
+      <div class="option">평촌경영고등학교</div>
+      <div class="option">광동고등학교</div>
+      <div class="option">동우여자고등학교</div>
+      <div class="option">동원고등학교</div>
+      <div class="option">덕영고등학교</div>
+      <div class="option">동탄국제고등학교</div>
+      <div class="option">백운고등학교</div>
+      <div class="option">서천고등학교</div>
+      <div class="option">성균관대학교</div>
+
+      <button id="closePopup" class="close-btn">닫기</button>
+    </div>
+  </div>
+
+  <div id="labelButtons" class="selector" style="display: none; flex-direction: column; gap: 10px;"></div>
+
+  <div class="popup-overlay" id="labelInfoPopup" style="display: none;">
+    <div class="popup-select">
+      <h3 id="popupLabelTitle"></h3>
+      <ul id="popupLabelExamples"></ul>
+      <button id="startLessonBtn" class="close-btn">교육 수강하기</button>
+      <button id="closeLabelPopup" class="close-btn" style="background: #ccc; color: #000;">닫기</button>
+    </div>
+  </div>
+
+  <div class="logo-list">
+    <img src="dimi.png" alt="디미고" class="logo">
+    <img src="jowon.png" alt="조원고" class="logo">
+    <img src="scienceinfo.png" alt="과기정통부" class="logo">
+    <img src="kungki.png" alt="경기도" class="logo">
+    <img src="kungkieco.png" alt="경기도경제과학진흥원" class="logo">
+    <img src="korinfo.png" alt="한국정보과학진흥협회" class="logo">
+    <img src="infotrans.png" alt="정보통신산업진흥원" class="logo">
+    <img src="sung.png" alt="성균관대" class="logo">
+  </div>
+
+  <script>
+    const openBtn = document.getElementById('openSelectBtn');
+    const schoolPopup = document.getElementById('schoolSelectPopup');
+    const labelPopup = document.getElementById('labelInfoPopup');
+    const closePopup = document.getElementById('closePopup');
+    const closeLabelPopup = document.getElementById('closeLabelPopup');
+    const labelButtonContainer = document.getElementById('labelButtons');
+    const modeIcon = document.getElementById('modeIcon');
+    const popupLabelTitle = document.getElementById('popupLabelTitle');
+    const popupLabelExamples = document.getElementById('popupLabelExamples');
+    const startLessonBtn = document.getElementById('startLessonBtn');
+
+    let jsonData = [];
+    let rotation = 0;
+
+    const labelLinks = {
+      "여성/가족": "https://www.youtube.com/watch?v=atjLe8azVys",
+      "남성": "https://www.youtube.com/watch?v=atjLe8azVys",
+      "성소수자": "https://www.youtube.com/watch?v=C8F5mi2oNsc",
+      "인종/국적": "https://www.youtube.com/watch?v=z4ftwz1Sn5s",
+      "연령": "https://www.youtube.com/watch?v=SYa7xbONn-I",
+      "지역": "https://www.youtube.com/watch?v=o0VfeVSQKq0",
+      "종교": "https://www.youtube.com/watch?v=YtV8XyDHqi4",
+      "기타 혐오": "https://www.youtube.com/watch?v=EL--naoX1KQ",
+      "악플/욕설": "https://www.youtube.com/watch?v=AjPrpku-7U0",
+      "개인지칭": "https://www.youtube.com/watch?v=f5vgc9apIrI",
+      "장애": "https://www.youtube.com/watch?v=uBbNNqumoQs"
+    };
+
+    openBtn.onclick = () => schoolPopup.style.display = 'flex';
+    closePopup.onclick = () => schoolPopup.style.display = 'none';
+    closeLabelPopup.onclick = () => labelPopup.style.display = 'none';
+    schoolPopup.addEventListener('click', e => { if (e.target === schoolPopup) schoolPopup.style.display = 'none'; });
+    labelPopup.addEventListener('click', e => { if (e.target === labelPopup) labelPopup.style.display = 'none'; });
+
+    modeIcon.onclick = () => {
+      const isDark = document.body.classList.toggle('dark-mode');
+      rotation += 180;
+      modeIcon.style.transform = `rotate(${rotation}deg)`;
+      modeIcon.style.opacity = '0';
+      setTimeout(() => {
+        modeIcon.src = isDark ? 'sun.png' : 'moon.png';
+        modeIcon.style.opacity = '1';
+      }, 150);
+    };
+
+    const analyzeTopLabels = (data) => {
+      const counts = {};
+      const examples = {};
+
+      data.forEach(item => {
+        const content = item["내용"]?.trim();
+        if (!content || content.includes("dc official App")) return;
+
+        let bestLabel = null;
+        let bestScore = 0;
+
+        for (const key in item) {
+          if (key === "내용" || key === "clean" || !(key in labelLinks)) continue;
+          const score = parseFloat(item[key]);
+          if (score > bestScore) {
+            bestScore = score;
+            bestLabel = key;
+          }
+        }
+
+        if (bestLabel && bestScore > 0.25) {
+          counts[bestLabel] = (counts[bestLabel] || 0) + 1;
+          if (!examples[bestLabel]) examples[bestLabel] = [];
+          examples[bestLabel].push(content);
+        }
+      });
+
+      return Object.entries(counts)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 3)
+        .map(([label, count]) => ({ label, count, examples: examples[label] }));
+    };
+
+    const showLabelButtons = (topLabels) => {
+      labelButtonContainer.innerHTML = '';
+      topLabels.forEach((item, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'form-select';
+        btn.textContent = `${idx + 1}. ${item.label} (${item.count}회)`;
+        btn.onclick = () => {
+          const shuffled = item.examples.sort(() => 0.5 - Math.random());
+          const selected = shuffled.slice(0, 2);
+          popupLabelTitle.textContent = `${item.label} 예시`;
+          popupLabelExamples.innerHTML = selected.map(e => `<li>${e}</li>`).join('');
+          labelPopup.style.display = 'flex';
+
+          startLessonBtn.onclick = () => {
+            const url = labelLinks[item.label];
+            if (url) window.open(url, '_blank');
+          };
+        };
+        labelButtonContainer.appendChild(btn);
+      });
+      labelButtonContainer.style.display = 'flex';
+    };
+
+    const loadAndAnalyzeJSON = (filename) => {
+      labelButtonContainer.style.display = 'flex';
+      labelButtonContainer.innerHTML = `<div style="color: var(--text-color); font-size: 18px;">데이터 불러오는 중...</div>`;
+
+      fetch(filename)
+        .then(res => res.json())
+        .then(data => {
+          jsonData = data;
+          const topLabels = analyzeTopLabels(jsonData);
+          showLabelButtons(topLabels);
+        })
+        .catch(() => {
+          labelButtonContainer.innerHTML = `<div style="color: var(--text-color); font-size: 18px; font-weight: 400">해당 학교의 JSON 파일이 존재하지 않습니다.</div>`;
+        });
+    };
+
+    document.querySelectorAll('.option').forEach(opt => {
+      opt.onclick = () => {
+        const schoolName = opt.textContent.trim();
+        openBtn.textContent = schoolName;
+        schoolPopup.style.display = 'none';
+        const filename = `${schoolName}.json`;
+        loadAndAnalyzeJSON(filename);
+      };
+    });
+  </script>
+</body>
+</html>

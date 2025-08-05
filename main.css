@@ -1,0 +1,271 @@
+@charset "UTF-8";
+:root {
+  --bg-color: white;
+  --text-color: black;
+  --popup-bg: white;
+  --button-bg: black;
+  --button-text: white;
+  --option-bg: #f9f9f9;
+  --option-hover: #eee;
+  --logo-shadow: rgba(0, 0, 0, 0.1);
+}
+
+body.dark-mode {
+  --bg-color: #121212;
+  --text-color: #f5f5f5;
+  --popup-bg: #1e1e1e;
+  --button-bg: #f5f5f5;
+  --button-text: #121212;
+  --option-bg: #2a2a2a;
+  --option-hover: #3a3a3a;
+  --logo-shadow: rgba(255, 255, 255, 0.1);
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  margin: 0;
+  font-family: sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* ===== 헤더 및 설명 ===== */
+.main-header {
+  position: relative;
+  text-align: center;
+  padding: 10px;
+}
+
+.subtitle {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text-color);
+  opacity: 0.7;
+}
+
+.main-description {
+  width: 80%;
+  position: absolute;
+  top: 165px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--text-color);
+  opacity: 0.9;
+}
+
+/* ===== 메인 이미지 (중요 로고) ===== */
+.main-image {
+  position: fixed;
+  bottom: 70px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90px;
+  height: auto;
+  z-index: 10;
+  transition: width 0.3s ease;
+}
+
+.main-image:hover {
+  width: 120px;
+}
+
+body.dark-mode .main-image {
+  filter: invert(1) brightness(1.2) contrast(1.2);
+}
+
+/* ===== 테마 전환 버튼 ===== */
+.theme-toggle {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  z-index: 1000;
+}
+
+.theme-toggle img {
+  width: 70px;
+  height: 70px;
+  cursor: pointer;
+  transition: filter 0.4s ease, transform 0.4s ease, opacity 0.3s ease;
+}
+
+body.dark-mode .theme-toggle img {
+  filter: invert(1) brightness(1.2) contrast(1.2);
+}
+
+/* ===== 학교 선택 영역 ===== */
+.selector {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 120px auto 30px;
+  height: auto;
+  z-index: 1;
+  margin-top: 50px;
+  gap: 16px;
+}
+
+#labelButtons {
+  margin-top: 10px !important;
+}
+
+/* ===== 버튼 스타일 ===== */
+.form-select {
+  font-size: 23px;
+  font-weight: 500;
+  text-align: center;
+  width: 50%;
+  height: 10vh;
+  border-radius: 10px;
+  border: 1px solid var(--text-color);
+  cursor: pointer;
+  background-color: var(--popup-bg);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease, transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.form-select:hover {
+  filter: brightness(90%);
+}
+
+.form-select:active {
+  transform: translateY(2px) scale(0.98);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  filter: brightness(85%);
+}
+
+/* ===== 팝업 영역 ===== */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.popup-select {
+  background: var(--popup-bg);
+  padding: 30px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+  max-height: 80vh;
+  overflow-y: auto;
+  box-sizing: border-box;
+  color: var(--text-color);
+}
+
+.popup-select .option {
+  padding: 15px;
+  margin: 8px 0;
+  border: 1px solid var(--text-color);
+  border-radius: 8px;
+  cursor: pointer;
+  background-color: var(--option-bg);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease, transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.popup-select .option:hover {
+  background-color: var(--option-hover);
+}
+
+.popup-select .option:active {
+  transform: translateY(2px) scale(0.98);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  filter: brightness(85%);
+}
+
+/* ===== 닫기 버튼 ===== */
+.close-btn {
+  margin-top: 10px;
+  padding: 10px 20px;
+  background: var(--button-bg);
+  color: var(--button-text);
+  border: none;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease, transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.close-btn:hover {
+  filter: brightness(90%);
+}
+
+.close-btn:active {
+  transform: translateY(2px) scale(0.98);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  filter: brightness(85%);
+}
+
+/* ===== 로고 리스트 ===== */
+.logo-list {
+  position: fixed;
+  bottom: 0;
+  left: -10px;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  padding: 20px 10px;
+  background-color: var(--bg-color);
+  z-index: 1;
+}
+
+.logo {
+  width: 30px;
+  height: auto;
+  -o-object-fit: contain;
+     object-fit: contain;
+  filter: drop-shadow(0 2px 4px var(--logo-shadow));
+  transition: transform 0.2s ease;
+}
+
+.logo:hover {
+  transform: scale(2);
+}
+
+/* ===== 유저 선택 비활성화 ===== */
+* {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+       user-select: none;
+  outline: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+       appearance: none;
+}
+
+#popupLabelExamples {
+  text-align: left;
+  padding-left: 0;
+  list-style-position: inside;
+}
+
+.sub-logo {
+  width: 300px;
+  height: auto;
+  margin: 15px auto;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.sub-logo:hover {
+  transform: scale(1.1);
+}
+
+body.dark-mode .sub-logo {
+  filter: invert(1) brightness(1.2) contrast(1.2);
+}/*# sourceMappingURL=main.css.map */
