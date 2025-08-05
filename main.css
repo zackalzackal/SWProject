@@ -55,8 +55,8 @@ body {
 }
 
 .main-image {
-  position: fixed;
-  bottom: 70px;
+  position: absolute;
+  bottom: -290%;
   left: 50%;
   transform: translateX(-50%);
   width: 90px;
@@ -74,9 +74,9 @@ body.dark-mode .main-image {
 }
 
 .theme-toggle {
-  position: fixed;
-  top: 15px;
-  right: 15px;
+  position: relative;
+  top: -175px;
+  right: -95%;
   z-index: 1000;
 }
 
